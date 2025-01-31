@@ -1,3 +1,4 @@
+{ok}
 unit uPrincipal;
 
 interface
