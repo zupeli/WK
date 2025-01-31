@@ -1,4 +1,13 @@
-{ok}
+{
+31/01/2025
+Projeto de avaliação para a WKTechnology
+Banco utilizado: mysql-5.7.11
+Scripts no arquivo: Query.sql
+Delphi 11
+Elvys Zupeli
+
+}
+
 unit uPrincipal;
 
 interface
