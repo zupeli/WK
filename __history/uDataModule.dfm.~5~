@@ -1,0 +1,33 @@
+object DM: TDM
+  OnCreate = DataModuleCreate
+  OnDestroy = DataModuleDestroy
+  Height = 504
+  Width = 746
+  PixelsPerInch = 120
+  object FDConnection1: TFDConnection
+    Params.Strings = (
+      'Database=meuBanco'
+      'User_Name=root'
+      'Password=root'
+      'Server=localhost'
+      'DriverID=MySQL')
+    LoginPrompt = False
+    Left = 600
+    Top = 72
+  end
+  object FDQuery1: TFDQuery
+    Connection = FDConnection1
+    Left = 592
+    Top = 160
+  end
+  object FDGUIxWaitCursor1: TFDGUIxWaitCursor
+    Provider = 'Forms'
+    Left = 576
+    Top = 264
+  end
+  object FDPhysMySQLDriverLink1: TFDPhysMySQLDriverLink
+    VendorLib = 'D:\Aulas\Delphi\WK\LIBMYSQL.DLL'
+    Left = 584
+    Top = 344
+  end
+end

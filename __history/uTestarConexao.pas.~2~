@@ -1,0 +1,27 @@
+unit uTestarConexao;
+
+interface
+
+implementation
+
+uses
+  System.SysUtils, uDataModule;
+
+procedure StatusConexao;
+var
+  DM : TDM;
+begin
+  DM := TDM.Create(nil);
+
+  if DM.FDConnection.Connected then
+  begin
+    //lbStatus.Caption := 'Status Conexao: Conectado';
+  end
+  else
+  begin
+    //lbStatus.Caption := 'Status Conexao: Desconectado';
+  end;
+  FreeAndNil(DM);
+end;
+
+end.

@@ -1,0 +1,104 @@
+unit uCliente;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.Grids, Vcl.DBGrids,
+  Vcl.StdCtrls, Datasnap.DBClient;
+
+type
+  TfrmCliente = class(TForm)
+    GroupBox1: TGroupBox;
+    btOK: TButton;
+    DBGrid_clientes: TDBGrid;
+    btCancelar: TButton;
+    cdsClientes: TClientDataSet;
+    cdsClientesds_nome: TStringField;
+    cdsClientesds_cidade: TStringField;
+    cdsClientesds_uf: TStringField;
+    cdsClientesid_cliente: TIntegerField;
+    dtsClientes: TDataSource;
+    procedure btCancelarClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure btOKClick(Sender: TObject);
+    procedure DBGrid_clientesDblClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+  private
+    FIdCliente: integer;
+    FNomeCliente: string;
+    procedure getCliente;
+    procedure setID;
+    { Private declarations }
+  public
+    { Public declarations }
+    property IdCliente   : integer  read FIdCliente    write FIdCliente;
+    property NomeCliente : string   read FNomeCliente  write FNomeCliente;
+  end;
+
+var
+ frmCliente: TfrmCliente;
+
+implementation
+
+uses uPedidosCliente;
+
+{$R *.dfm}
+
+procedure TfrmCliente.btCancelarClick(Sender: TObject);
+begin
+  IdCliente := 0;
+  NomeCliente := '';
+  close;
+end;
+
+procedure TfrmCliente.btOKClick(Sender: TObject);
+begin
+  setID;
+end;
+
+procedure TfrmCliente.DBGrid_clientesDblClick(Sender: TObject);
+begin
+  setID;
+end;
+
+procedure TfrmCliente.setID;
+begin
+  IdCliente := cdsClientesid_cliente.AsInteger;
+  NomeCliente := cdsClientesds_nome.AsString;
+  ModalResult := mrOk;
+end;
+
+procedure TfrmCliente.FormCreate(Sender: TObject);
+begin
+   IdCliente   := 0;
+   NomeCliente := '';
+   cdsClientes.CreateDataSet;
+end;
+
+procedure TfrmCliente.FormDestroy(Sender: TObject);
+begin
+  cdsClientes.EmptyDataSet;
+end;
+
+procedure TfrmCliente.FormShow(Sender: TObject);
+begin
+  getCliente;
+end;
+
+procedure TfrmCliente.getCliente;
+var
+  vOjbClientes : TCLiente;
+begin
+  vOjbClientes := TCLiente.Create;
+  try
+    cdsClientes.Data := vOjbClientes.getClientes;
+
+  finally
+    FreeAndNil(vOjbClientes);
+  end;
+
+end;
+
+end.

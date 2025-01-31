@@ -1,0 +1,94 @@
+unit uParametros;
+
+interface
+
+uses uDataModule;
+
+type
+  TParametro = class
+
+  private
+  class var UserName   : string;
+  class var Server     : string;
+  class var Database   : string;
+  class var CaminhoDll : string;
+  class var Port       : string;
+  class var Password   : string;
+
+  Public
+   class procedure Conexao;
+   class procedure setUserName(pParam :string);
+   class procedure setDatabase(pParam :string);
+   class procedure setServer(pParam :string);
+   class procedure setPort(pParam :string);
+   class procedure setPassword(pParam :string);
+   class procedure setCaminhoDll(pParam :string);
+
+//   property Port      : String     read FPort      write FPort;
+{
+vDatabase   := ArquivoINI.ReadString('MYSQL', 'database', '');
+      vUserName   := ArquivoINI.ReadString('MYSQL', 'username', '');
+      vServer     := ArquivoINI.ReadString('MYSQL', 'server', '');
+      vPort       := ArquivoINI.ReadString('MYSQL', 'port', '');
+      vPassword   := ArquivoINI.ReadString('MYSQL', 'password', '');
+      vCaminhoDLL := ArquivoINI.ReadString('MYSQL', 'dll', '');
+}
+  end;
+
+implementation
+
+
+
+{ TParametro }
+
+class procedure TParametro.setCaminhoDll(pParam: string);
+begin
+  CaminhoDll := pParam;
+end;
+
+class procedure TParametro.setDatabase(pParam: string);
+begin
+  Database := pParam;
+end;
+
+class procedure TParametro.setPassword(pParam: string);
+begin
+  Password := pParam;
+end;
+
+class procedure TParametro.setPort(pParam: string);
+begin
+  Port := pParam;
+end;
+
+class procedure TParametro.setServer(pParam: string);
+begin
+  Server := pParam;
+end;
+
+class procedure TParametro.Conexao;
+var
+  vDataModule : TDM;
+begin
+  vDataModule := TDM.Create(nil);
+  try
+    vDataModule.FDPhysMySQLDriverLink1.VendorLib := CaminhoDll;
+    vDataModule.FDConnection1.Params.Database := '';
+    vDataModule.FDConnection1.Params.Password := '';
+    vDataModule.FDConnection1.Params.port := 0;
+    vDataModule.FDConnection1.Params.Server := '';
+    vDataModule.FDConnection1.Params.UserName := '';
+
+  finally
+    vDataModule.FDConnection1.Connected := True;
+  end;
+
+
+end;
+
+class procedure TParametro.setUserName(pParam: string);
+begin
+  UserName := pParam;
+end;
+
+end.

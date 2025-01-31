@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2024/09/04 11:15:12.000.312,=C:\Users\zupel\OneDrive\Documentos\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2025/01/28 20:12:38.000.217,=C:\Users\zupel\OneDrive\Documentos\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2025/01/28 20:13:06.000.439,=C:\Users\zupel\OneDrive\Documentos\Embarcadero\Studio\Projects\Unit2.pas</Transaction>
+    <Transaction>2025/01/28 20:16:06.000.958,C:\Users\zupel\OneDrive\Documentos\Embarcadero\Studio\Projects\Unit1.dfm=D:\Aulas\Delphi\WK\uPrincipal.dfm</Transaction>
+    <Transaction>2025/01/28 20:16:06.000.958,C:\Users\zupel\OneDrive\Documentos\Embarcadero\Studio\Projects\Unit1.pas=D:\Aulas\Delphi\WK\uPrincipal.pas</Transaction>
+    <Transaction>2025/01/28 20:16:27.000.278,C:\Users\zupel\OneDrive\Documentos\Embarcadero\Studio\Projects\Unit2.pas=D:\Aulas\Delphi\WK\uDataModule.pas</Transaction>
+    <Transaction>2025/01/28 20:16:27.000.278,C:\Users\zupel\OneDrive\Documentos\Embarcadero\Studio\Projects\Unit2.dfm=D:\Aulas\Delphi\WK\uDataModule.dfm</Transaction>
+    <Transaction>2025/01/28 20:16:52.000.190,C:\Users\zupel\OneDrive\Documentos\Embarcadero\Studio\Projects\Project1.dproj=D:\Aulas\Delphi\WK\PedidosVenda.dproj</Transaction>
+    <Transaction>2025/01/28 21:25:42.000.961,=D:\Aulas\Delphi\WK\Unit1.pas</Transaction>
+    <Transaction>2025/01/28 21:26:38.000.408,D:\Aulas\Delphi\WK\Unit1.pas=D:\Aulas\Delphi\WK\uParametros.pas</Transaction>
+    <Transaction>2025/01/29 11:47:43.000.925,=D:\Aulas\Delphi\WK\Unit1.pas</Transaction>
+    <Transaction>2025/01/29 11:48:13.000.121,D:\Aulas\Delphi\WK\uCliente.pas=D:\Aulas\Delphi\WK\Unit1.pas</Transaction>
+    <Transaction>2025/01/29 11:48:13.000.121,D:\Aulas\Delphi\WK\uCliente.dfm=D:\Aulas\Delphi\WK\Unit1.dfm</Transaction>
+    <Transaction>2025/01/29 14:40:00.000.940,=D:\Aulas\Delphi\WK\Unit1.pas</Transaction>
+    <Transaction>2025/01/29 14:56:56.000.708,D:\Aulas\Delphi\WK\uPedido.pas=D:\Aulas\Delphi\WK\Unit1.pas</Transaction>
+    <Transaction>2025/01/29 14:56:56.000.708,D:\Aulas\Delphi\WK\uPedido.dfm=D:\Aulas\Delphi\WK\Unit1.dfm</Transaction>
+    <Transaction>2025/01/29 15:01:11.000.633,=D:\Aulas\Delphi\WK\Unit1.pas</Transaction>
+    <Transaction>2025/01/29 15:01:46.000.239,D:\Aulas\Delphi\WK\uPedidosCliente.pas=D:\Aulas\Delphi\WK\Unit1.pas</Transaction>
+    <Transaction>2025/01/30 16:13:55.000.987,=D:\Aulas\Delphi\WK\Unit1.pas</Transaction>
+    <Transaction>2025/01/30 16:14:08.000.512,D:\Aulas\Delphi\WK\Unit1.pas=D:\Aulas\Delphi\WK\uTestarConexao.pas</Transaction>
+  </Transactions>
+</BorlandProject>

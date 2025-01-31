@@ -1,0 +1,60 @@
+unit uCliente;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.Grids, Vcl.DBGrids,
+  Vcl.StdCtrls;
+
+type
+  TfrmCliente = class(TForm)
+    GroupBox1: TGroupBox;
+    btOK: TButton;
+    DBGrid1: TDBGrid;
+    btCancelar: TButton;
+    procedure btCancelarClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+  private
+    FIdCliente: integer;
+    { Private declarations }
+  public
+    { Public declarations }
+    property IdCliente   : integer  read FIdCliente    write FIdCliente;
+  end;
+
+var
+  frmCliente: TfrmCliente;
+
+implementation
+
+uses uDataModule;
+
+{$R *.dfm}
+
+procedure TfrmCliente.btCancelarClick(Sender: TObject);
+begin
+  IdCliente := 0;
+  close;
+end;
+
+procedure TfrmCliente.FormCreate(Sender: TObject);
+begin
+   IdCliente := 0;
+end;
+
+procedure TfrmCliente.getCliente;
+var
+  vOjbDM : TDM;
+begin
+  vOjbDM := TDM.Create(nil);
+  try
+
+
+  finally
+    FreeAndNil(vOjbDM);
+  end;
+
+end;
+
+end.

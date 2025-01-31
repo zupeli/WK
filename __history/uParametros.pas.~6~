@@ -1,0 +1,38 @@
+unit uParametros;
+
+interface
+
+uses uDataModule;
+
+type
+  TParametro = class
+
+  private
+    FPort: String;
+
+  Public
+//   teste : string;
+   class procedure setPorta(pPorta :string);
+   class var teste : string;
+   property Port      : String     read FPort      write FPort;
+
+  end;
+
+implementation
+
+
+
+{ TParametro }
+
+class procedure TParametro.setPorta(pPorta: string);
+//var
+//  vDataModule : TDM;
+begin
+  TParametro.teste := '123';
+//  vDataModule := TDM.Create(nil);
+//  vDataModule.Database := '';
+//  vDataModule.FDConnection1.Params.
+//  TParametro.FPort := pPorta;
+end;
+
+end.

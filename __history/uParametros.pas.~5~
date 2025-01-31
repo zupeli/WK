@@ -1,0 +1,31 @@
+unit uParametros;
+
+interface
+
+type
+  TParametro = class
+
+  private
+    FDatabase: String;
+    FPort: String;
+
+  Public
+   teste : string;
+   class procedure setPorta(pPorta :string);
+   property Database      : String     read FDatabase      write FDatabase;
+   property Port      : String     read FPort      write FPort;
+
+  end;
+
+implementation
+
+
+
+{ TParametro }
+
+class procedure TParametro.setPorta(pPorta: string);
+begin
+  teste := pPorta;
+end;
+
+end.

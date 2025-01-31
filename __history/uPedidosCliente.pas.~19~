@@ -1,0 +1,119 @@
+unit uPedidosCliente;
+
+interface
+
+uses
+  Datasnap.DBClient;
+
+  Type
+    TProdutos = class
+
+  private
+
+  public
+    function getProdutos:OleVariant;
+    procedure AtualizarEstoqueProduto(pIdProduto, pQtProduto : integer; pAdicao : boolean);
+  end;
+
+  Type
+    TPedidos = class
+
+  private
+  //
+  public
+    procedure inserirPedido(pIdCliente : integer; pVlTotal : Extended; pDados: OleVariant);
+  end;
+
+  Type
+    TCLiente = class
+
+  private
+  public
+    function getClientes:OleVariant;
+    function getPedidosCliente(pIdCliente: integer):OleVariant;
+  end;
+
+
+implementation
+
+uses uDataModule, System.SysUtils, Data.SqlExpr, Data.DBXCommon;
+
+function TCLiente.getClientes:OleVariant;
+var
+  vOjbDM : TDM;
+begin
+  vOjbDM := TDM.Create(nil);
+  try
+    Result := vOjbDM.Clientes;
+
+  finally
+    FreeAndNil(vOjbDM);
+  end;
+
+end;
+
+function TCLiente.getPedidosCliente(pIdCliente : integer):OleVariant;
+var
+  vOjbDM : TDM;
+begin
+  vOjbDM := TDM.Create(nil);
+  try
+    Result := vOjbDM.PedidosDoCliente(pIdCliente);
+  finally
+    FreeAndNil(vOjbDM);
+  end;
+
+end;
+
+{ TProdutos }
+
+procedure TProdutos.AtualizarEstoqueProduto(pIdProduto, pQtProduto: integer; pAdicao : boolean);
+var
+  vOjbDM : TDM;
+begin
+  vOjbDM := TDM.Create(nil);
+  try
+    vOjbDM.FDConnection.StartTransaction;
+    vOjbDM.AtualizarEstoque(pIdProduto, pQtProduto, pAdicao);
+
+    vOjbDM.FDConnection.Commit;
+    FreeAndNil(vOjbDM);
+  except
+    vOjbDM.FDConnection.Rollback;
+  end;
+end;
+
+function TProdutos.getProdutos: OleVariant;
+var
+  vOjbDM : TDM;
+begin
+  vOjbDM := TDM.Create(nil);
+  try
+    Result := vOjbDM.Produtos;
+  finally
+    FreeAndNil(vOjbDM);
+  end;
+
+end;
+
+{ TPedidos }
+
+procedure TPedidos.inserirPedido(pIdCliente : integer; pVlTotal : Extended; pDados: OleVariant);
+var
+  vOjbDM : TDM;
+  vIdPedido : integer;
+begin
+  vOjbDM := TDM.Create(nil);
+  try
+    vOjbDM.FDConnection.StartTransaction;
+    vIdPedido := vOjbDM.InserirPedidoCliente(pIdCliente, pVlTotal);
+    vOjbDM.InserirItem(vIdPedido, pDados);
+
+    vOjbDM.FDConnection.Commit;
+    FreeAndNil(vOjbDM);
+  except
+    vOjbDM.FDConnection.Rollback;
+  end;
+end;
+
+end.

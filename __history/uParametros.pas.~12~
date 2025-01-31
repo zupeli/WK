@@ -1,0 +1,117 @@
+unit uParametros;
+
+interface
+
+uses uDataModule;
+
+type
+  TParametro = class
+
+  private
+    FPort: String;
+    FCaminhoDll: String;
+    FDatabase: String;
+    FServer: String;
+    FPassword: String;
+    FUserName: String;
+//  class var UserName   : string;
+//  class var Server     : string;
+//  class var Database   : string;
+//  class var CaminhoDll : string;
+//  class var Porta       : string;
+//  class var Password   : string;
+
+    procedure SetPort(const Value: String);
+    procedure SetCaminhoDll(const Value: String);
+    procedure setDatabase(const Value: String);
+    procedure setServer(const Value: String);
+    procedure setPassword(const Value: String);
+    procedure SetUserName(const Value: String);
+
+  Public
+   class procedure Conexao;
+//   class procedure setUserName(pParam :string);
+//   class procedure setDatabase(pParam :string);
+//   class procedure setServer(pParam :string);
+//   class procedure setPort(pParam :string);
+//   class procedure setPassword(pParam :string);
+//   class procedure setCaminhoDll(pParam :string);
+
+   property UserName   : String  read FUserName    write SetUserName;
+   property Port       : String  read FPort        write SetPort;
+   property Database   : String  read FDatabase    write setDatabase;
+   property Server     : String  read FServer      write setServer;
+   property Password   : String  read FPassword    write setPassword;
+   property CaminhoDll : String  read FCaminhoDll  write SetCaminhoDll;
+{
+vDatabase   := ArquivoINI.ReadString('MYSQL', 'database', '');
+      vUserName   := ArquivoINI.ReadString('MYSQL', 'username', '');
+      vServer     := ArquivoINI.ReadString('MYSQL', 'server', '');
+      vPort       := ArquivoINI.ReadString('MYSQL', 'port', '');
+      vPassword   := ArquivoINI.ReadString('MYSQL', 'password', '');
+      vCaminhoDLL := ArquivoINI.ReadString('MYSQL', 'dll', '');
+}
+  end;
+
+implementation
+
+
+
+{ TParametro }
+
+procedure TParametro.SetCaminhoDll(const Value: String);
+begin
+  FCaminhoDll := Value;
+end;
+
+procedure TParametro.setDatabase(const Value: String);
+begin
+  FDatabase := Value;
+end;
+
+procedure TParametro.setPassword(const Value: String);
+begin
+  FPassword := Value;
+end;
+
+procedure TParametro.SetPort(const Value: String);
+begin
+  FPort := Value;
+end;
+
+
+procedure TParametro.setServer(const Value: String);
+begin
+  FServer := Value;
+end;
+
+procedure TParametro.SetUserName(const Value: String);
+begin
+  FUserName := Value;
+end;
+
+class procedure TParametro.Conexao;
+var
+  vDataModule : TDM;
+begin
+  vDataModule := TDM.Create(nil);
+  try
+    {
+    vDataModule.FDPhysMySQLDriverLink1.VendorLib := CaminhoDll;
+    vDataModule.FDConnection1.Params.Database := Database;
+    vDataModule.FDConnection1.Params.Password := Password;
+    vDataModule.FDConnection1.Params.UserName := UserName;
+    vDataModule.FDConnection1.Params.Add('port=' + Port);
+    vDataModule.FDConnection1.Params.Add('port=' + Server);
+    }
+
+  finally
+    //vDataModule.FDConnection1.Connected := True;
+  end;
+
+
+end;
+
+
+
+end.

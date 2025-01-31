@@ -1,0 +1,290 @@
+unit uDataModule;
+
+interface
+
+uses
+  System.SysUtils, System.Classes, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def,
+  FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys, FireDAC.Stan.Param,
+  FireDAC.DatS, FireDAC.DApt.Intf, FireDAC.DApt, FireDAC.VCLUI.Wait,
+  FireDAC.Phys.MySQLDef, FireDAC.Phys.MySQL, FireDAC.Comp.UI, Data.DB,
+  FireDAC.Comp.DataSet, FireDAC.Comp.Client, Provider, Data.DBXMySQL,
+  Data.SqlExpr;
+
+type
+  TDM = class(TDataModule)
+    FDConnection: TFDConnection;
+    FDQuery1: TFDQuery;
+    FDGUIxWaitCursor1: TFDGUIxWaitCursor;
+    FDPhysMySQLDriverLink1: TFDPhysMySQLDriverLink;
+    SQLConnection: TSQLConnection;
+    procedure DataModuleCreate(Sender: TObject);
+    procedure DataModuleDestroy(Sender: TObject);
+  private
+    function getQuantidadeProduto(pIdProduto: Integer): Integer;
+    function PedidosDoCliente(pIdCliente: integer): OleVariant;
+    { Private declarations }
+  public
+    { Public declarations }
+    function Clientes: OleVariant;
+    function Produtos: OleVariant;
+    function NomeCliente(pIdCliente: integer): String;
+    procedure AtualizarEstoque(pIdProduto, pQtProduto: integer; pAdicao : boolean);
+    function InserirPedidoCliente(pIdCliente : integer; pVlTotal : Extended): Integer;
+    procedure InserirItem(pIdPedido: integer; pDados: OleVariant);
+  end;
+
+const
+   QryProdutos = 'Select id_produto, ds_produto, ' +
+                 '       qt_produto, format(vl_produto, 2) as vl_produto  ' +
+                 '  from produtos                ' +
+                 ' order by ds_produto, qt_produto';
+
+   QryClientes = 'Select id_cliente, ds_nome, ds_cidade, ds_uf ' +
+                 '  from clientes                              ' +
+                 ' order by ds_nome, ds_uf, ds_cidade';
+
+   QryClienteNome = 'Select ds_nome  ' +
+                    '  from clientes ' +
+                    ' where id_cliente = :id_cliente';
+   QryAtualizarEstoque = 'update produtos set qt_produto = :qt_produto '+
+                         'where id_produto = :id_produto';
+
+   QryQtdAtual = 'select qt_produto from produtos where id_produto = :id_produto';
+
+   QryInserirPedidoItem = 'Insert into pedido_item (id_pedido, id_produto, ' +
+                          ' vl_unitario, vl_total, qt_item)                ' +
+                          ' values(:id_pedido, :id_produto, :vl_unitario,  ' +
+                          ' :vl_total, :qt_item)';
+   QryInserirPedido =  'Insert into pedidos (id_cliente, dt_pedido, vl_total) ' +
+                       ' values(:id_cliente, :dt_pedido, :vl_total)';
+var
+  DM: TDM;
+
+implementation
+
+uses uPrincipal, Datasnap.DBClient; //  uParametros,
+
+{%CLASSGROUP 'Vcl.Controls.TControl'}
+
+{$R *.dfm}
+
+procedure TDM.DataModuleCreate(Sender: TObject);
+begin
+
+  FDPhysMySQLDriverLink1.VendorLib := fObjParam.CaminhoDll;
+  FDConnection.Params.Database := fObjParam.Database;
+  FDConnection.Params.Password := fObjParam.Password;
+  FDConnection.Params.UserName := fObjParam.UserName;
+  FDConnection.Params.Add('port='   + fObjParam.Port);
+  FDConnection.Params.Add('server=' + fObjParam.Server);
+  FDConnection.Connected := True;
+end;
+
+procedure TDM.DataModuleDestroy(Sender: TObject);
+begin
+  FDConnection.Connected := False;
+end;
+
+
+function TDM.NomeCliente(pIdCliente : integer):String;
+var
+ vQry : TFDQuery;
+begin
+  vQry := TFDQuery.Create(nil);
+  try
+    vQry.Connection := FDConnection;
+
+    vQry.SQL.Text := QryClienteNome;
+    vQry.ParamByName('id_cliente').AsInteger := pIdCliente;
+
+    vQry.Open;
+
+    Result := vQry.FieldByName('ds_nome').AsString;
+  finally
+    vQry.Close;
+    FreeAndNil(vQry);
+  end;
+end;
+
+
+procedure TDM.AtualizarEstoque(pIdProduto, pQtProduto : integer; pAdicao : boolean);
+var
+ vQry : TFDQuery;
+ vQtdAtual : Integer;
+begin
+  vQry := TFDQuery.Create(nil);
+  try
+    vQry.Connection := FDConnection;
+    vQtdAtual := getQuantidadeProduto(pIdProduto);
+
+    vQry.SQL.Text := QryAtualizarEstoque;
+    vQry.ParamByName('id_produto').AsInteger := pIdProduto;
+
+    if pAdicao then
+    begin
+      vQry.ParamByName('qt_produto').AsInteger := vQtdAtual + pQtProduto;
+    end
+    else
+    begin
+      vQry.ParamByName('qt_produto').AsInteger := vQtdAtual - pQtProduto;
+    end;
+    vQry.ExecSQL;
+  finally
+    FreeAndNil(vQry);
+  end;
+end;
+
+function TDM.getQuantidadeProduto(pIdProduto : Integer):Integer;
+var
+ vQry : TFDQuery;
+begin
+  vQry := TFDQuery.Create(nil);
+  try
+    vQry.Connection := FDConnection;
+
+    vQry.SQL.Text := QryQtdAtual;
+    vQry.ParamByName('id_produto').AsInteger := pIdProduto;
+    vQry.Open;
+    Result := vQry.FieldByName('qt_produto').AsInteger;
+  finally
+    vQry.Close;
+    FreeAndNil(vQry);
+  end;
+end;
+
+function TDM.InserirPedidoCliente(pIdCliente : integer; pVlTotal : Extended):Integer;
+var
+ vQry : TFDQuery;
+begin
+  vQry := TFDQuery.Create(nil);
+  try
+    vQry.Connection := FDConnection;
+
+    vQry.SQL.Text := QryInserirPedido;
+    vQry.ParamByName('id_cliente').AsInteger  := pIdCliente;
+    vQry.ParamByName('dt_pedido' ).AsDateTime := Now;
+    vQry.ParamByName('vl_total'  ).AsFloat    := pVlTotal;
+    vQry.ExecSQL;
+
+    vQry.SQL.Text := 'select LAST_INSERT_ID() as id_pedido';
+    vQry.Open;
+    Result := vQry.FieldByName('id_pedido').AsInteger;
+  finally
+    vQry.Close;
+    FreeAndNil(vQry);
+  end;
+end;
+
+procedure TDM.InserirItem(pIdPedido : integer; pDados : OleVariant);
+var
+ vQry : TFDQuery;
+ vCds: TClientDataSet;
+begin
+  vQry := TFDQuery.Create(nil);
+  try
+    vQry.Connection := FDConnection;
+    vCDS := TClientDataSet.Create(nil);
+    vCds.Data := pDados;
+    vCds.First;
+    while not vCds.Eof do
+    begin
+
+      vQry.SQL.Text := QryInserirPedidoItem;
+      vQry.ParamByName('id_pedido'  ).AsInteger := pIdPedido;
+      vQry.ParamByName('id_produto' ).AsInteger := vCds.FieldByName('id_produtao' ).AsInteger;
+      vQry.ParamByName('vl_unitario').AsFloat   := vCds.FieldByName('vl_unitario').AsFloat;
+      vQry.ParamByName('vl_total'   ).AsFloat   := vCds.FieldByName('vl_total'   ).AsFloat;
+      vQry.ParamByName('qt_item'    ).AsInteger := vCds.FieldByName('qt_produto' ).AsInteger;
+      vQry.ExecSQL;
+
+      vCds.Next;
+    end;
+
+  finally
+    FreeAndNil(vQry);
+    FreeAndNil(vCds);
+  end;
+end;
+
+function TDM.Clientes:OleVariant;
+var
+ vQry : TFDQuery;
+ vCds: TClientDataSet;
+ vDSP : TDataSetProvider;
+begin
+  vQry := TFDQuery.Create(nil);
+  vDSP := TDataSetProvider.Create(nil);
+  vCDS := TClientDataSet.Create(nil);
+  try
+    vQry.Connection := FDConnection;
+
+    vQry.SQL.Text := QryClientes;
+    vDSP.DataSet := vQry;
+    vCDS.SetProvider(vDSP);
+    vCDS.Open;
+
+    Result := vCDS.Data;
+  finally
+    vQry.Close;
+    FreeAndNil(vQry);
+    FreeAndNil(vDSP);
+    FreeAndNil(vCDS);
+  end;
+end;
+
+function TDM.PedidosDoCliente(pIdCliente:integer):OleVariant;
+var
+ vQry : TFDQuery;
+ vCds: TClientDataSet;
+ vDSP : TDataSetProvider;
+begin
+  vQry := TFDQuery.Create(nil);
+  vDSP := TDataSetProvider.Create(nil);
+  vCDS := TClientDataSet.Create(nil);
+  try
+    vQry.Connection := FDConnection;
+
+    vQry.SQL.Text := '';
+    vDSP.DataSet := vQry;
+    vCDS.SetProvider(vDSP);
+    vCDS.Open;
+
+    Result := vCDS.Data;
+  finally
+    vQry.Close;
+    FreeAndNil(vQry);
+    FreeAndNil(vDSP);
+    FreeAndNil(vCDS);
+  end;
+end;
+
+function TDM.Produtos:OleVariant;
+var
+ vQry : TFDQuery;
+ vCds: TClientDataSet;
+ vDSP : TDataSetProvider;
+begin
+  vQry := TFDQuery.Create(nil);
+  vDSP := TDataSetProvider.Create(nil);
+  vCDS := TClientDataSet.Create(nil);
+  try
+    vQry.Connection := FDConnection;
+
+    vQry.SQL.Text := QryProdutos;
+    vDSP.DataSet := vQry;
+    vCDS.SetProvider(vDSP);
+    vCDS.Open;
+
+    Result := vCDS.Data;
+  finally
+    vQry.Close;
+    FreeAndNil(vQry);
+    FreeAndNil(vDSP);
+    FreeAndNil(vCDS);
+  end;
+end;
+
+
+
+end.

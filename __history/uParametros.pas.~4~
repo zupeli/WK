@@ -1,0 +1,21 @@
+unit uParametros;
+
+interface
+
+type
+  TBanco = record
+   Port : string;
+  end;
+  TParametro = class
+
+  private
+    FDatabase: String;
+
+  Public
+   property Database      : String     read FDatabase      write FDatabase;
+
+  end;
+
+implementation
+
+end.
